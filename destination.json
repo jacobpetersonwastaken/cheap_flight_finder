@@ -1,0 +1,16 @@
+{
+  "home": "SLC",
+  "location": {
+    "new york": {
+      "iata code": null,
+      "lowest price": null,
+      "historical price": {
+        "date": {
+          "20211124": {
+            "price": []
+          }
+        }
+      }
+    }
+  }
+}
