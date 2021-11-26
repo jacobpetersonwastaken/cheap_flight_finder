@@ -1,3 +1,7 @@
+import os
+import sys
+
+
 class UserInput:
 
     def add_location(self, save_data):
@@ -8,12 +12,12 @@ class UserInput:
                 try:
                     add_city = float(add_city)
                 except ValueError:
-                    check_correct = input(f'You added the city {add_city.title()}. Is that correct? Yes/No\n').lower()
+                    check_city = input(f'You added the city {add_city.title()}. Is that correct? Yes/No\n').lower()
                 else:
                     print('That is not a correct response. Try again.')
                     continue
-                if check_correct == 'yes' or check_correct == 'no':
-                    if check_correct == 'yes':
+                if check_city == 'yes' or check_city == 'no':
+                    if check_city == 'yes':
                         break
                     else:
                         continue
@@ -26,13 +30,13 @@ class UserInput:
                 try:
                     add_iata_code = float(add_iata_code)
                 except ValueError:
-                    check_correct = input(f'You added the IATA code {add_iata_code.upper()}. '
-                                          f'Is that correct? Yes/No\n').lower()
+                    check_iata_code = input(f'You added the IATA code {add_iata_code.upper()}. '
+                                            f'Is that correct? Yes/No\n').lower()
                 else:
                     print('That is not a correct response. Try again.')
                     continue
-                if check_correct == 'yes' or check_correct == 'no':
-                    if check_correct == 'yes':
+                if check_iata_code == 'yes' or check_iata_code == 'no':
+                    if check_iata_code == 'yes':
                         break
                     else:
                         continue
@@ -41,17 +45,18 @@ class UserInput:
                     continue
             """Adding cut off price"""
             while True:
-                add_cut_off_price = input(f'What is the cut off price for {add_city.title()} {add_iata_code.upper()}?\n')
+                add_cut_off_price = input(
+                    f'What is the cut off price for {add_city.title()} {add_iata_code.upper()}?\n')
                 try:
                     add_cut_off_price = int(add_cut_off_price)
                 except ValueError:
                     print('That is not a correct response. Try again.')
                     continue
                 else:
-                    check_correct = input(
+                    check_cut_off_price = input(
                         f'You added the cut off price ${add_cut_off_price}. Is that correct? Yes/No\n').lower()
-                if check_correct == 'yes' or check_correct == 'no':
-                    if check_correct == 'yes':
+                if check_cut_off_price == 'yes' or check_cut_off_price == 'no':
+                    if check_cut_off_price == 'yes':
                         add_cut_off_price = int(add_cut_off_price)
                         break
                     else:
@@ -65,7 +70,11 @@ class UserInput:
                                                f'Is this correct? Yes/No\n')
                 if check_location_correct == 'yes' or check_location_correct == 'no':
                     if check_location_correct == 'yes':
-                        save_data()
+                        """Saves data"""
+
+                        location_data = {'add_location': [add_city, add_iata_code,
+                                                          add_cut_off_price]}
+                        save_data = save_data(location_data)
                         break
                     else:
                         break
@@ -88,3 +97,38 @@ class UserInput:
 
     def add_home(self, save_data, user_home):
         while True:
+            while True:
+                check_user_home = input(
+                    f'Your current home is set to {user_home}. Would you like to update it? Yes/No\n').lower()
+                if check_user_home == 'yes' or check_user_home == 'no':
+                    if check_user_home == 'yes':
+                        break
+                    else:
+                        break
+                else:
+                    print('That is not a correct response. Try again.')
+                    continue
+            if check_user_home == 'no':
+                break
+            else:
+                while True:
+                    add_user_home = input(f'What is the IATA code you would like to add as your home city?\n').lower()
+                    try:
+                        add_user_home = float(add_user_home)
+                    except ValueError:
+                        check_correct = input(
+                            f'Your home has been updated to {add_user_home.upper()}. Is that correct? Yes/No\n').lower()
+                    else:
+                        print('That is not a correct response. Try again.')
+                        continue
+                    if check_correct == 'yes' or check_correct == 'no':
+                        if check_correct == 'yes':
+                            self.user_home_data = add_user_home
+                            break
+                        else:
+                            continue
+                    else:
+                        print('That is not a correct response. Try again.')
+                        continue
+                if check_correct == 'yes':
+                    break

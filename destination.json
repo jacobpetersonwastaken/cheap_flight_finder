@@ -3,7 +3,7 @@
   "location": {
     "new york": {
       "iata code": null,
-      "lowest price": null,
+      "cut off price": null,
       "historical price": {
         "date": {
           "20211124": {

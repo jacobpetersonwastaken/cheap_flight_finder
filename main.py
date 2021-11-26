@@ -6,7 +6,9 @@ from requests import *
 from twilio.rest import Client
 from threading import Thread
 from user_input import UserInput
+
 user_input = UserInput()
+
 running = True
 load_dotenv('.env')
 today_date = datetime.now()
@@ -50,17 +52,33 @@ def future_date(today_date, days_in_future):
     return future_date_str
 
 
-def save_data():
-    print('saving data...')
-
-
-def get_user_data(**kwargs):
+def get_user_data(search):
     with open('destination.json') as f:
         data = json.load(f)
-    home = data['home']
-    """Learning how to use **kwargs so that we just just have home in the usermenue changing home input to pull
-    the current location of home that way we can print it"""
+    if search == 'home':
+        home = data['home']
+        return home
 
+
+def save_data(save_type):
+    print('saving data...')
+    with open('destination.json') as f:
+        data = json.load(f)
+    if 'add_location' in save_type:
+        add_city = save_type['add_location'][0]
+        add_iata_code = save_type['add_location'][1]
+        add_cut_off_price = save_type['add_location'][2]
+
+        data['location'][add_city] = {'iata code': add_iata_code,
+                                      'cut off price': add_cut_off_price
+                                      }
+
+
+    elif save_type == 'add_user_home':
+        pass
+    with open('destination.json', 'w+') as file:
+        json.dump(data, file)
+    print('Data saved.')
 
 
 def user_menu():
@@ -76,10 +94,18 @@ def user_menu():
         elif user_text_input in user_options:
             if user_text_input == user_options[0]:
                 """adding location"""
+
+                """The problem is right here! rather than getting the saved data input 
+                from user_input its grabbing it its just taking the string from
+                the class parameters
+                when we call the 
+                """
+
                 user_input.add_location(save_data=save_data)
             else:
                 """changing home"""
-                user_input.add_home(save_data=save_data, user_home=get_user_data(home))
+                user_input.add_home(save_data=save_data(save_type=user_input.user_home_data),
+                                    user_home=get_user_data(search='home'))
         else:
             print('error with user input.')
 
@@ -121,6 +147,7 @@ def get_flight_data(from_iata: str, date_from: str, date_to: str, adults: int):
     #     price = i['price']
     #     print(city, price)
     print(r)
+
 
 # get_flight_data(from_iata='SLC', date_from='24/11/2021',
 #                 date_to='01/06/2022', adults=2)
