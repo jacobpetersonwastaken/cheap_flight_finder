@@ -60,35 +60,18 @@ def get_user_data(search):
         return home
 
 
-def save_data(save_type):
-    print('saving data...')
-    with open('destination.json') as f:
-        data = json.load(f)
-    if 'add_location' in save_type:
-        add_city = save_type['add_location'][0]
-        add_iata_code = save_type['add_location'][1]
-        add_cut_off_price = save_type['add_location'][2]
+def exit(exit):
+    global running
+    if exit == 'exit':
+        running = False
+        print('Closing down program.')
+    return running
 
-        data['location'][add_city] = {'iata code': add_iata_code,
-                                      'cut off price': add_cut_off_price,
-                                      "historical price": {
-                                          "date": {
-                                              None: {
-                                                  'price': []
-                                              }
-                                          }
-                                      }
-                                      }
-    elif 'add_home' in save_type:
-        data['home'] = save_type['add_home']
-    with open('destination.json', 'w') as file:
-        json.dump(data, file)
-    print('Data saved.')
 
 
 def user_menu():
-    user_options = ['add location', 'change home']
-    while True:
+    user_options = ['add location', 'change home', 'exit']
+    while running:
         user_text_input = input('What would you like to do today? Type (help) for options. \n').lower()
         if user_text_input == 'help':
             print(user_options)
@@ -106,10 +89,15 @@ def user_menu():
                 when we call the 
                 """
 
-                user_input.add_location(save_data=save_data)
-            else:
+                user_input.add_location()
+            elif user_text_input == user_options[1]:
                 """changing home"""
-                user_input.add_home(save_data=save_data, user_home=get_user_data(search='home'))
+                user_input.add_home(user_home=get_user_data(search='home'))
+            elif user_text_input == user_options[2]:
+                exit(exit='exit')
+                break
+
+
         else:
             print('error with user input.')
 

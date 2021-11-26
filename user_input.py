@@ -1,14 +1,17 @@
 import os
 import sys
-
+from save_data import SaveData
 
 class UserInput:
+    def __init__(self):
+        self.save_data = SaveData()
 
-    def add_location(self, save_data):
+    def add_location(self):
         while True:
             """Adding city"""
             while True:
                 add_city = input('What is the name of the city you would like to add?\n').lower()
+
                 try:
                     add_city = float(add_city)
                 except ValueError:
@@ -27,14 +30,9 @@ class UserInput:
             """Adding IATA code"""
             while True:
                 add_iata_code = input(f'What is the IATA code for {add_city.title()}?\n').lower()
-                try:
-                    add_iata_code = float(add_iata_code)
-                except ValueError:
-                    check_iata_code = input(f'You added the IATA code {add_iata_code.upper()}. '
-                                            f'Is that correct? Yes/No\n').lower()
-                else:
-                    print('That is not a correct response. Try again.')
-                    continue
+
+                check_iata_code = input(f'You added the IATA code {add_iata_code.upper()}. '
+                                        f'Is that correct? Yes/No\n').lower()
                 if check_iata_code == 'yes' or check_iata_code == 'no':
                     if check_iata_code == 'yes':
                         break
@@ -74,7 +72,7 @@ class UserInput:
                         """Saves data"""
                         location_data = {'add_location': [add_city, add_iata_code,
                                                           add_cut_off_price]}
-                        save_data = save_data(location_data)
+                        self.save_data.save_data(save_type=location_data)
                         break
                     else:
                         break
@@ -95,7 +93,7 @@ class UserInput:
                     print('That is not a correct response. Try again.')
                     continue
 
-    def add_home(self, save_data, user_home):
+    def add_home(self, user_home):
         while True:
             while True:
                 check_user_home = input(
@@ -125,7 +123,7 @@ class UserInput:
                         if check_correct == 'yes':
                             """Save new home data"""
                             location_data = {'add_home': add_user_home}
-                            save_data = save_data(location_data)
+                            self.save_data.save_data(save_type=location_data)
                             break
                         else:
                             continue
