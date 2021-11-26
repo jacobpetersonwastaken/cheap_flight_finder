@@ -1,1 +1,1 @@
-{"home": "SLC", "location": {"new york": {"iata code": null, "cut off price": null, "historical price": {"date": {"20211124": {"price": []}}}}, "helsinki": {"iata code": "hel", "cut off price": 600}}}
+{"home": "jfk", "location": {"new york": {"iata code": null, "cut off price": null, "historical price": {"date": {"20211124": {"price": []}}}}, "helsinki": {"iata code": "hel", "cut off price": 600, "historical price": {"date": {"null": {"price": []}}}}}}

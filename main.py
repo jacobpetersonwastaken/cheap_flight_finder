@@ -70,13 +70,18 @@ def save_data(save_type):
         add_cut_off_price = save_type['add_location'][2]
 
         data['location'][add_city] = {'iata code': add_iata_code,
-                                      'cut off price': add_cut_off_price
+                                      'cut off price': add_cut_off_price,
+                                      "historical price": {
+                                          "date": {
+                                              None: {
+                                                  'price': []
+                                              }
+                                          }
                                       }
-
-
-    elif save_type == 'add_user_home':
-        pass
-    with open('destination.json', 'w+') as file:
+                                      }
+    elif 'add_home' in save_type:
+        data['home'] = save_type['add_home']
+    with open('destination.json', 'w') as file:
         json.dump(data, file)
     print('Data saved.')
 
@@ -104,8 +109,7 @@ def user_menu():
                 user_input.add_location(save_data=save_data)
             else:
                 """changing home"""
-                user_input.add_home(save_data=save_data(save_type=user_input.user_home_data),
-                                    user_home=get_user_data(search='home'))
+                user_input.add_home(save_data=save_data, user_home=get_user_data(search='home'))
         else:
             print('error with user input.')
 

@@ -70,8 +70,8 @@ class UserInput:
                                                f'Is this correct? Yes/No\n')
                 if check_location_correct == 'yes' or check_location_correct == 'no':
                     if check_location_correct == 'yes':
-                        """Saves data"""
 
+                        """Saves data"""
                         location_data = {'add_location': [add_city, add_iata_code,
                                                           add_cut_off_price]}
                         save_data = save_data(location_data)
@@ -123,7 +123,9 @@ class UserInput:
                         continue
                     if check_correct == 'yes' or check_correct == 'no':
                         if check_correct == 'yes':
-                            self.user_home_data = add_user_home
+                            """Save new home data"""
+                            location_data = {'add_home': add_user_home}
+                            save_data = save_data(location_data)
                             break
                         else:
                             continue
