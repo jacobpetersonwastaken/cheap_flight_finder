@@ -10,16 +10,24 @@ class SaveData:
             add_iata_code = save_type['add_location'][1]
             add_cut_off_price = save_type['add_location'][2]
 
+            # data['locations'][add_city] = {'iata code': add_iata_code,
+            #                'cut off price': add_cut_off_price
+            #                }
+            # data['locations'].append({
+            #     add_city: {'iata code': add_iata_code,
+            #                'cut off price': add_cut_off_price
+            #                }
+            # })
+            # data['locations'] = [{
+            #     add_city: {'iata code': add_iata_code,
+            #                'cut off price': add_cut_off_price
+            #                }
+            # }]
+
             data['location'][add_city] = {'iata code': add_iata_code,
-                                          'cut off price': add_cut_off_price,
-                                          "historical price": {
-                                              "date": {
-                                                  None: {
-                                                      'price': []
-                                                  }
-                                              }
+                                          'cut off price': add_cut_off_price
                                           }
-                                          }
+
         elif 'add_home' in save_type:
             data['home'] = save_type['add_home']
         with open('destination.json', 'w') as file:

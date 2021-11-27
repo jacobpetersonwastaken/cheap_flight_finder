@@ -12,7 +12,11 @@ class GetIataCode:
         header = {
             'apikey': tequila_api_key
         }
-        query = {"term": city, "location_types": "city"}
+        query = {
+            "term": city,
+            "location_types": "city",
+            'limit': 10
+        }
         r = get(url=location_endpoint, headers=header, params=query)
         results = r.json()["locations"]
         if len(results) == 0:
@@ -20,5 +24,4 @@ class GetIataCode:
         else:
             code = results[0]["code"]
             return code
-
 
