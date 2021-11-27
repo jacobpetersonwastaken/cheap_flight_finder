@@ -1,1 +1,38 @@
-{"home": "slc", "location": {"helsinki": {"iata code": "hel", "cut off price": 500, "historical price": {"date": {"null": {"price": []}}}}, "new york": {"iata code": "jfk", "cut off price": 230, "historical price": {"date": {"null": {"price": []}}}}, "fort bragg": {"iata code": "cl82", "cut off price": 220, "historical price": {"date": {"null": {"price": []}}}}}}
+{
+  "home": "slc",
+  "location": {
+    "helsinki": {
+      "iata code": "hel",
+      "cut off price": 500,
+      "historical price": {
+        "date": {
+          "null": {
+            "price": []
+          }
+        }
+      }
+    },
+    "new york": {
+      "iata code": "jfk",
+      "cut off price": 230,
+      "historical price": {
+        "date": {
+          "null": {
+            "price": []
+          }
+        }
+      }
+    },
+    "fort bragg": {
+      "iata code": "cl82",
+      "cut off price": 220,
+      "historical price": {
+        "date": {
+          "null": {
+            "price": []
+          }
+        }
+      }
+    }
+  }
+}

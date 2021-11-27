@@ -68,7 +68,6 @@ def exit(exit):
     return running
 
 
-
 def user_menu():
     user_options = ['add location', 'change home', 'exit']
     while running:
@@ -82,22 +81,14 @@ def user_menu():
         elif user_text_input in user_options:
             if user_text_input == user_options[0]:
                 """adding location"""
-
-                """The problem is right here! rather than getting the saved data input 
-                from user_input its grabbing it its just taking the string from
-                the class parameters
-                when we call the 
-                """
-
                 user_input.add_location()
             elif user_text_input == user_options[1]:
                 """changing home"""
                 user_input.add_home(user_home=get_user_data(search='home'))
             elif user_text_input == user_options[2]:
+                """exit program"""
                 exit(exit='exit')
                 break
-
-
         else:
             print('error with user input.')
 
@@ -114,14 +105,17 @@ def notification(message, to):
 
 
 def get_flight_data(from_iata: str, date_from: str, date_to: str, adults: int):
+
+    # nomad_api_key = os.getenv('TEQUILA_NOMAD_API_KEY')
     tequila_api_key = os.getenv('TEQUILA_API_KEY')
     endpoint = 'https://tequila-api.kiwi.com/v2/search'
+    nomad_endpoint = 'https://tequila-api.kiwi.com/v2/nomad'
     header = {
         'apikey': tequila_api_key
     }
     parameters = {
         'fly_from': from_iata,
-        'fly_to': 'JFK',
+        'fly_to': '40.76--111.89-2000km',
         'date_from': date_from,
         'date_to': date_to,
         'adults': adults,
@@ -132,17 +126,13 @@ def get_flight_data(from_iata: str, date_from: str, date_to: str, adults: int):
         "nights_in_dst_from": 3,
         "nights_in_dst_to": 28
     }
-    r = get(url=endpoint, headers=header, params=parameters).json()['data']
-    # result_list = [i for i in r]
-    # for i in result_list:
-    #     city = i['cityTo']
-    #     price = i['price']
-    #     print(city, price)
-    print(r)
+    r = get(url=endpoint, headers=header, params=parameters).json()
+    result_list = [i for i in r]
+    for i in result_list:
+        city = i['cityTo']
+        price = i['price']
+        print(city, price)
 
-
-# get_flight_data(from_iata='SLC', date_from='24/11/2021',
-#                 date_to='01/06/2022', adults=2)
 
 
 def quit_program():
