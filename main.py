@@ -1,12 +1,16 @@
 from datetime import *
-import json
-import os
 from dotenv import load_dotenv
-from twilio.rest import Client
+import os
 from user_input import UserInput
 from flight_data import FlightData
 from search import GetUserData
+from threading import Thread
+from multiprocessing import *
+from time import *
 
+send_to = os.getenv('JACOB')
+notification_day = 1
+notification_hour = 8
 search = GetUserData()
 flight_data = FlightData()
 user_input = UserInput()
@@ -19,6 +23,7 @@ days_in_future = 180
 future_date = today_date + timedelta(days=days_in_future)
 future_date_str = future_date.strftime('%d/%m/%Y')
 address_book = [os.getenv('SYDNEY'), os.getenv('JACOB')]
+
 """
 Features
 a list of places I want to go. with ability to expand that list and update the lowest price
@@ -57,20 +62,9 @@ def future_date(today_date, days_in_future):
     return future_date_str
 
 
-def exit(exit):
-    global running
-    if exit == 'exit':
-        running = False
-        print('Closing down program.')
-    return running
-
-# print(search.get_user_data('home'))
-# print(type(search.get_user_data('home')))
-# print(flight_data.get_flight_data(fly_from='slc', fly_to='HEL', date_from=today_date_str, date_to=future_date_str))
-
-
 def user_menu():
-    user_options = ['add location', 'change home', 'exit', 'get latest']
+    global running
+    user_options = ['add location', 'change home', 'get latest', 'change cutoff']
     while running:
         """Intro"""
         user_text_input = input('What would you like to do today? Type (help) for options. \n').lower()
@@ -78,7 +72,7 @@ def user_menu():
             print(user_options)
             continue
         elif user_text_input not in user_options:
-            print('that is not a valid response. Try again.')
+            print('That is not a valid response. Try again.')
             continue
         elif user_text_input in user_options:
             """menu items"""
@@ -89,34 +83,31 @@ def user_menu():
                 """changing home"""
                 user_input.add_home(user_home=search.get_user_data(search='home'))
             elif user_text_input == user_options[2]:
-                """exit program"""
-                exit(exit='exit')
-                break
+                """Get latest"""
+                data = flight_data.get_latest(today_date_str=today_date_str,
+                                              future_date_str=future_date_str)
+
             elif user_text_input == user_options[3]:
-                flight_data.get_latest(today_date_str=today_date_str,
-                                       future_date_str=future_date_str)
+                """Update cutoff price"""
+                pass
+            else:
+                print(user_options)
 
         else:
             print('error with user input.')
 
 
-def send_text(message, to):
-    twilio_sid = os.getenv('TWILIO_SID')
-    twilio_token = os.getenv('TWILIO_TOKEN')
-    client = Client(twilio_sid, twilio_token)
-    message_info = client.messages.create(body=message, from_='+13155644341', to=f'+1{to}')
-    return message_info.sid
+b = Thread(name='background', target=flight_data.auto_check, args=(today_date_str, future_date_str, send_to, running,
+                                                                   notification_day, notification_hour))
 
 
 def start():
     global running
-
     while running:
+        b.start()
         user_menu()
 
 
-"""Whats the problem
-the for loop is running 4 times
+f = Thread(name='forground', target=start)
 
-"""
-user_menu()
+f.start()

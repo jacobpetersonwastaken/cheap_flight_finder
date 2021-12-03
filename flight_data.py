@@ -1,15 +1,18 @@
+import json
 import os
 from datetime import *
 from dotenv import load_dotenv
 from requests import *
 from search import GetUserData
-
+from datetime import *
+from notification import Notification
+from time import *
 search = GetUserData()
-
+notification = Notification()
+load_dotenv('.env')
 
 class FlightData:
-    def __init__(self):
-        load_dotenv('.env')
+
 
     def shorten_url(self, url):
         bitly_api_key = os.getenv('BITLY_API_KEY')
@@ -47,19 +50,24 @@ class FlightData:
         }
         r = get(url=endpoint, headers=header, params=parameters).json()['data'][0]
         route = [i for i in r['route']]
+        return [r, route]
 
-        def format_time(time_input):
-            formatted_time = datetime.fromisoformat(time_input[:-1]).strftime('%a %d %b - %H:%m')
-            return formatted_time
+    def format_time(self, time_input):
+        formatted_time = datetime.fromisoformat(time_input[:-1]).strftime('%a %d %b - %H:%m')
+        return formatted_time
 
+    def organize_data(self, url_input: str, r, route, format_time):
         flight_path = [i['flyFrom'] for i in route]
         fly_from = r['flyFrom']
         fly_to = r['flyTo']
         nights_in_destination = r['nightsInDest']
         leave_date = format_time(route[0]['local_departure'])
         return_date = format_time(route[-1]['local_arrival'])
-        url_shorten = self.shorten_url(url=r['deep_link'])
-        url = r['deep_link']
+        if url_input == 'long':
+            url = r['deep_link']
+        elif url_input == 'short':
+            url = self.shorten_url(url=r['deep_link'])
+
         price = r['price']
 
         data_organized = f"\nFrom {fly_from} to {fly_to}\n" \
@@ -72,6 +80,38 @@ class FlightData:
 
     def get_latest(self, today_date_str, future_date_str):
         for i in search.get_user_data('iata'):
-            print(self.get_flight_data(fly_from=search.get_user_data('home'),
-                                       fly_to=i, date_from=today_date_str,
-                                       date_to=future_date_str))
+            data = self.get_flight_data(fly_from=search.get_user_data('home'),
+                                        fly_to=i, date_from=today_date_str,
+                                        date_to=future_date_str)
+            r = data[0]
+            route = data[1]
+            print(self.organize_data(url_input='long', r=r, route=route, format_time=self.format_time))
+
+    def time_till(self, days: int, hours: int, minutes: int, seconds: int):
+        t1 = (datetime.now() + timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds))
+        seconds_till = (t1 - datetime.now()).seconds
+        return seconds_till
+
+    def auto_check(self, today_date_str, future_date_str, send_to, day: int, hour):
+        destinations = search.get_user_data('locations')
+        with open('destination.json') as f:
+            info = json.load(f)
+        t = self.time_till(days=day, hours=hour, minutes=0, seconds=0)
+        while True:
+            counter = 0
+            sleep(t)
+            for i in search.get_user_data('iata'):
+                data = self.get_flight_data(fly_from=search.get_user_data('home'),
+                                            fly_to=i, date_from=today_date_str,
+                                            date_to=future_date_str)
+                r = data[0]
+                route = data[1]
+                price = int(r['price'])
+                if price <= info['location'][destinations[counter]]['cut off price']:
+                    message = f"\nAlert! A prices have dropped!\n{self.organize_data(url_input='short', r=r, route=route, format_time=self.format_time)}"
+                    notification.send_text(message=message, to=send_to)
+                counter += 1
+            print('this ran')
+
+
+

@@ -31,11 +31,19 @@ class UserInput:
                     continue
             """Adding IATA code"""
             while True:
-                add_iata_code = self.get_iata_code.get_iata_code(city=add_city).upper()
+                add_iata_code = self.get_iata_code.get_iata_code(city=add_city)
 
                 if not add_iata_code:
                     print(f'No IATA Code found for {add_city.title()}. Try again.')
-                    continue
+                    while True:
+                        add_iata_code = input(f'What is the IATA code for {add_city.title()}?\n').upper()
+                        check_iata_code = input(f'The IATA code for {add_city.title()} is {add_iata_code.upper()}. '
+                                                f'Does that look correct? Yes/No\n').lower()
+                        if check_iata_code == 'yes' or check_iata_code == 'no':
+                            if check_iata_code == 'yes':
+                                break
+                            else:
+                                continue
                 else:
                     check_iata_code = input(f'The IATA code for {add_city.title()} is {add_iata_code}. '
                                             f'Does that look correct? Yes/No\n').lower()

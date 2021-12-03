@@ -12,6 +12,11 @@
     "houston": {
       "iata code": "HOU",
       "cut off price": 500
+    },
+    "toyoko": {
+      "iata code": "HND",
+      "cut off price": 1000
     }
   }
 }
+
