@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 
 
 class GetIataCode:
-
     def get_iata_code(self, city: str):
+        """Gets the IATA code from the Tequila api from the city name."""
         load_dotenv('.env')
         location_endpoint = f'https://tequila-api.kiwi.com/locations/query'
         tequila_api_key = os.getenv('TEQUILA_API_KEY')

@@ -2,6 +2,7 @@ import json
 
 class SaveData:
     def save_data(self, save_type):
+        """Saves data and holds data template lol"""
         print('saving data...')
         with open('destination.json') as f:
             data = json.load(f)

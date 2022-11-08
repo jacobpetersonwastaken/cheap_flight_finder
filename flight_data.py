@@ -12,9 +12,8 @@ notification = Notification()
 load_dotenv('.env')
 
 class FlightData:
-
-
     def shorten_url(self, url):
+        """Shortens the long ass url that tequila api gives us."""
         bitly_api_key = os.getenv('BITLY_API_KEY')
         endpoint = 'https://api-ssl.bitly.com/v4/shorten'
         header = {
@@ -27,6 +26,7 @@ class FlightData:
         return r
 
     def get_flight_data(self, fly_from: str, fly_to: str, date_from: str, date_to: str):
+        """Gets flight data from the Tequila API and returns the flight route"""
         load_dotenv('.env')
         tequila_api_key = os.getenv('TEQUILA_API_KEY')
         endpoint = 'https://tequila-api.kiwi.com/v2/search'
@@ -46,17 +46,18 @@ class FlightData:
             'curr': 'USD',
             'select_airlines': 'f9',
             'select_airlines_exclude': True
-
         }
         r = get(url=endpoint, headers=header, params=parameters).json()['data'][0]
         route = [i for i in r['route']]
         return [r, route]
 
     def format_time(self, time_input):
+        """Formats time into strftime"""
         formatted_time = datetime.fromisoformat(time_input[:-1]).strftime('%a %d %b - %H:%m')
         return formatted_time
 
     def organize_data(self, url_input: str, r, route, format_time):
+        """Takes flight data and arses it out into the SMS format."""
         flight_path = [i['flyFrom'] for i in route]
         fly_from = r['flyFrom']
         fly_to = r['flyTo']
@@ -79,6 +80,7 @@ class FlightData:
         return data_organized
 
     def get_latest(self, today_date_str, future_date_str):
+        """Gets users watchlist locations and returns the latest data to console."""
         for i in search.get_user_data('iata'):
             data = self.get_flight_data(fly_from=search.get_user_data('home'),
                                         fly_to=i, date_from=today_date_str,
@@ -88,11 +90,14 @@ class FlightData:
             print(self.organize_data(url_input='long', r=r, route=route, format_time=self.format_time))
 
     def time_till(self, days: int, hours: int, minutes: int, seconds: int):
+        """Calculates the time till a specific time."""
         t1 = (datetime.now() + timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds))
         seconds_till = (t1 - datetime.now()).seconds
         return seconds_till
 
     def auto_check(self, today_date_str, future_date_str, send_to, day: int, hour):
+        """Waits for the x amount of time user sets to check for updates on flight deals and will send SMS message if
+        meets user criteria."""
         destinations = search.get_user_data('locations')
         with open('destination.json') as f:
             info = json.load(f)
